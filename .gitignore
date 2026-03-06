@@ -10,3 +10,15 @@ data/
 
 # scripts (main python files)
 *.py
+
+# datasets
+data/
+
+# python scripts
+*.py
+
+# markdown notes
+*.md
+
+# report files
+*.pdf

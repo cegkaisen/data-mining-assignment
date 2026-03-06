@@ -4,7 +4,6 @@ This project analyzes grocery transaction data using association rule mining.
 
 ## Files
 - `notebooks/analysis.ipynb`: main analysis notebook
-- `src/main.py`: optional script version
 - `requirements.txt`: Python dependencies
 
 ## Setup

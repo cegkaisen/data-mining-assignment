@@ -6,26 +6,28 @@ In this study, I performed association rule mining on the provided grocery shopp
 
 I applied the necessary preprocessing steps on the dataset, created transactions, and extracted frequent itemsets and association rules using the Apriori algorithm. I also examined the effect of these parameters on the results by testing different support and confidence values.
 
-Not: I used an AI-powered tool during the code development process.
+Note: I used an AI-powered tool during the code development process.
+
+Note 2: I moved the .csv files into the data folder; the same must be done for the code to work.
 
 ## **2. Dataset Description**
 
-Kullanılan veri setindeki tablolar ve açıklamaları:
-- orders.csv: Her sipariş için order bilgilerini içerir. Örneğin order_id, order_dow ve order_hour_of_day.
+Tables and descriptions in the data set used:
+- orders.csv: It contains order information for each order. For example, order_id, order_dow, and order_hour_of_day.
 
 - order_products.csv: 
-Hangi order içinde hangi product’ların bulunduğunu gösterir.
+It shows which products are included in which order.
 
 - products.csv: 
-Product isimlerini ve product kategorilerini içerir.
+It includes product names and product categories.
 
 - aisles.csv: 
-Product’ları aisle kategorileri ile eşleştirir.
+Matches products with aisle categories.
 
 - departments.csv: 
-Daha genel product kategorilerini içerir.
+It includes more general product categories.
 
-Orijinal veri seti yaklaşık 3.4 milyon order içermekte. Association rule mining algoritmaları büyük veri setlerinde oldukça maliyetli olduğu için analizde 50,000 order’lık rastgele bir sample kullandım.
+The original dataset contains approximately 3.4 million orders. Since association rule mining algorithms are quite costly on large datasets, I used a random sample of 50,000 orders for the analysis.
 
 ```python
 sample_size = 50000
@@ -35,27 +37,27 @@ sampled_orders = orders.sample(n=sample_size, random_state=42)
 
 ## **3. Data Preparation**
 
-Analizde her order bir transaction olarak kabul edilmiştir.
+In the analysis, each order has been treated as a transaction.
 
-Item olarak doğrudan `product_id` kullanmak yerine `aisle` kategorileri kullandım. aisle kategorileri daha yorumlanabilir ve asile'yi kullanmak item sayısını azaltarak analizi daha yönetilebilir hale getiriyor.
+Instead of using `product_id` directly as an item, I used `aisle` categories. Aisle categories are more interpretable, and using aisles makes the analysis more manageable by reducing the number of items.
 
-Data preparation sürecinde şu adımları uyguladım:
+I followed these steps during the data preparation process:
 
-1. orders tablosundan rastgele 50,000 order sample aldım.
+1. I randomly selected 50,000 orders from the orders table.
 
-2. order_products tablosunu yalnızca bu order’lara ait kayıtları içerecek şekilde filtreledim.
+2. I filtered the order_products table to include only the records belonging to these orders.
 
-3. Product bilgilerini products tablosundan ekledim.
+3. I added the product information from the products table.
 
-4. Aisle kategorileri aisles tablosu ile join ettim.
+4. I joined the aisle categories with the aisles table.
 
-5. Her order_id için transaction oluşturmak amacıyla verileri group ettim.
+5. I grouped the data to create a transaction for each order_id.
 
-6. Aynı transaction içinde tekrar eden aisle değerleri kaldırdım.
+6. I removed duplicate aisle values within the same transaction.
 
-7. Bu işlemler sonucunda her transaction'ı bir order içindeki benzersiz aisle kategorilerinden oluşan bir liste haline getirdim.
+7. As a result of these operations, I converted each transaction into a list consisting of unique aisle categories within an order.
 
-Bu işlemler sonucu oluşan tablodan bir örnek:
+An example from the table generated as a result of these operations:
 
 ```
 393 -> [breakfast bars pastries, candy chocolate, fresh fruits, milk, packaged cheese, packaged produce]
@@ -64,17 +66,17 @@ Bu işlemler sonucu oluşan tablodan bir örnek:
 
 ## **4. Frequent Itemset Mining**
 
-Frequent itemset’leri bulmak için `Apriori` algorithm kullandım.
+I used the `Apriori` algorithm to find frequent itemsets.
 
-Apriori algoritmasını uygulayabilmek için transaction verileri önce one-hot encoded formata dönüştürdüm. Bu işlem için TransactionEncoder kullandım. Bu formatta her sütun bir aisle kategorisini temsil eder ve her transaction için bu kategorinin bulunup bulunmadığını gösteren binary değerler içerir.
+To apply the Apriori algorithm, I first converted the transaction data into one-hot encoded format. I used TransactionEncoder for this process. In this format, each column represents an aisle category and contains binary values indicating whether this category is present or absent for each transaction.
 
-Daha sonra Apriori algorithm kullanılarak minimum support değerini geçen itemset’ler bulunmuştur.
+Then, using the Apriori algorithm, itemsets exceeding the minimum support value were identified.
 
 ## **5. Threshold Analysis**
 
-Association rule mining sonuçları seçilen support ve confidence değerlerine oldukça duyarlıdır. Bu nedenle farklı threshold değerleri denenerek sonuçların nasıl değiştiğini inceledim.
+Association rule mining results are highly sensitive to the selected support and confidence values. Therefore, I examined how the results changed by testing different threshold values.
 
-Support değeri azaltıldığında bulunan itemset ve rule sayısının hızla arttığını gördüm.
+I observed that the number of itemsets and rules found increased rapidly when the support value was reduced.
 
 | min_support | frequent itemsets | rules |
 |-------------|-------------------|-------|
@@ -82,7 +84,7 @@ Support değeri azaltıldığında bulunan itemset ve rule sayısının hızla a
 | 0.01        | 930               | 378   |
 | 0.005       | 1747              | 459   |
 
-Benzer şekilde confidence değeri arttıkça rule sayısı azalmaktadır.
+Similarly, as the confidence value increases, the number of rules decreases.
 
 | min_support | rules |
 |-------------|-------|
@@ -91,11 +93,11 @@ Benzer şekilde confidence değeri arttıkça rule sayısı azalmaktadır.
 | 0.5         | 3647  |
 | 0.7         | 1598  |
 
-Daha yüksek confidence değerleri daha güvenilir rule’lar üretirken toplam rule sayısını azaltır.
+Higher confidence values produce more reliable rules while reducing the total number of rules.
 
 ## **6. Association Rules and Insights**
 
-Apriori analizi sonucunda birkaç anlamlı association rule elde ettim.
+As a result of the a priori analysis, I obtained several meaningful association rules.
 
 ### **Rule 1**
 
@@ -107,7 +109,7 @@ Apriori analizi sonucunda birkaç anlamlı association rule elde ettim.
 
 - lift: 4.45
 
-Bu rule yüksek lift değerine sahiptir ve güçlü bir tamamlayıcı ürün ilişkisini göstermektedir. Pasta sauce satın alan müşterilerin dry pasta satın alma olasılığı ortalamadan çok daha yüksektir. cross-selling stratejileri için kullanılabilir.
+This rule has a high lift value and indicates a strong complementary product relationship. Customers who purchase pasta sauce are much more likely than average to purchase dry pasta. It can be used for cross-selling strategies.
 
 ### **Rule 2**
 
@@ -119,7 +121,7 @@ Bu rule yüksek lift değerine sahiptir ve güçlü bir tamamlayıcı ürün ili
 - 
 - lift: 2.10
 
-Bu rule granola ve yogurt ürünlerinin sıklıkla birlikte satın alındığını göstermektedir. Confidence değerinin yüksek olması granola satın alan müşterilerin yaklaşık yarısının yogurt da satın aldığını göstermektedir. Bu durum özellikle kahvaltı veya sağlıklı atıştırmalık tüketim alışkanlıklarını yansıtıyor olabilir.
+This rule indicates that granola and yogurt products are frequently purchased together. The high confidence value indicates that approximately half of customers who purchase granola also purchase yogurt. This may particularly reflect breakfast or healthy snack consumption habits.
 
 ### **Rule 3**
 
@@ -131,7 +133,7 @@ Bu rule granola ve yogurt ürünlerinin sıklıkla birlikte satın alındığın
   
 - lift: 1.89
 
-Bu rule oldukça yüksek bir confidence değerine sahiptir. Fresh herbs satın alan müşterilerin büyük çoğunluğu aynı zamanda fresh vegetables da satın almaktadır. Bu durum müşterilerin yemek hazırlamak için bu ürünleri birlikte satın aldığını göstermektedir.
+This rule has a very high confidence value. The vast majority of customers who purchase fresh herbs also purchase fresh vegetables. This indicates that customers purchase these products together for meal preparation.
 
 ### **Rule 4**
 
@@ -143,14 +145,14 @@ Bu rule oldukça yüksek bir confidence değerine sahiptir. Fresh herbs satın a
   
 - lift: 1.28
 
-Bu rule en yüksek support değerine sahip kurallardan biridir. Bu da müşterilerin alışverişlerinde meyve ve sebze kategorilerini sıklıkla birlikte satın aldığını göstermektedir. Lift değeri çok yüksek olmasa da yüksek support değeri bu ilişkinin oldukça yaygın bir alışveriş davranışı olduğunu göstermektedir.
+This rule has a very high confidence value. The vast majority of customers who purchase fresh herbs also purchase fresh vegetables. This indicates that customers purchase these products together for meal preparation.
 
 
 ## **7. Time-based Pattern Analysis**
 
-Product kategorileri arasındaki ilişkilerin yanında alışveriş zamanının da transaction davranışları üzerinde etkili olup olmadığını inceledim. Bu amaçla her transaction’a siparişin verildiği zaman dilimi de bir item olarak eklenmiştir.
+I examined whether the timing of purchases also affects transaction behavior, in addition to the relationships between product categories. For this purpose, the time period when the order was placed was also added as an item to each transaction.
 
-`order_hour_of_day` değişkeni daha anlamlı analiz yapabilmek için dört zaman kategorisine ayrılmıştır:
+The `order_hour_of_day` variable has been divided into four time categories to enable more meaningful analysis:
 
 - morning
 
@@ -160,13 +162,13 @@ Product kategorileri arasındaki ilişkilerin yanında alışveriş zamanının 
 
 - night
 
-Bu işlemden sonra transaction listeleri hem product kategorilerini hem de alışveriş zamanını içerecek şekilde yeniden oluşturdum. Örnek bir transaction:
+After this process, I recreated the transaction lists to include both product categories and purchase times. Example transaction:
 
 ```
 [fresh fruits, yogurt, milk, morning]
 ```
 
-Apriori algoritması tekrar çalıştırıldığında bazı rule’ların belirli zaman dilimleri ile birlikte ortaya çıktığını gördüm. Örneğin aşağıdaki rule dikkat çekici:
+When I reran the Apriori algorithm, I noticed that some rules appeared in conjunction with specific time periods. For example, the following rule is noteworthy:
 
 Rule: 
 ```
@@ -177,17 +179,17 @@ Rule:
 - lift: 4.73
 ```
 
-Bu rule yüksek bir lift değerine sahiptir. Bu sonuç, öğleden sonra pasta sauce alan müşterilerin dry pasta alma olasılığının daha yüksek olduğunu göstermektedir. Bu durum müşterilerin yemek hazırlığı için alışveriş yapması ile açıklanabilir.
+This rule has a high lift value. This result indicates that customers who purchase pasta sauce in the afternoon are more likely to purchase dry pasta. This can be explained by customers shopping for meal preparation.
 
-Ayrıca bazı rule’larda afternoon zamanının fresh vegetables ve packaged cheese gibi ürünlerle birlikte ortaya çıktığı görülmüştür. Bu da müşterilerin bu saatlerde yemek için gerekli ürünleri birlikte satın alma eğiliminde olduğunu göstermektedir.
+Additionally, in some rules, it has been observed that the afternoon time period coincides with products such as fresh vegetables and packaged cheese. This indicates that customers tend to purchase the necessary products for meals together during these hours.
 
-Bu sonuçlar alışveriş zamanının da müşteri davranışını etkileyebileceğini göstermektedir. Bu tür bilgiler time-aware recommendation systems için faydalı olabilir.
+These results indicate that shopping time can also influence customer behavior. Such information could be useful for time-aware recommendation systems.
 
 
 ## **8. Conclusion**
 
-Bu çalışmada grocery transaction verileri üzerinde association rule mining uyguladım. Apriori algorithm kullanılarak birlikte sık satın alınan product kategorileri belirledim.
+In this study, I applied association rule mining on grocery transaction data. Using the Apriori algorithm, I identified frequently purchased product categories.
 
-Elde edilen rule’lar müşterilerin alışveriş davranışları hakkında anlamlı bilgiler gösteriyor. Özellikle bazı ürün kategorilerinin birlikte satın alınma eğilimi açık şekilde görülmüştür. Ayrıca yapılan kısa time-based analiz, alışveriş zamanının da bazı ürün kombinasyonları ile ilişkili olabileceğini göstermiştir.
+The rules obtained reveal meaningful insights into customers' shopping behavior. In particular, a clear tendency to purchase certain product categories together has been observed. Furthermore, the short time-based analysis conducted suggests that shopping time may also be related to certain product combinations.
 
-Bu tür analizler mağaza yerleşimi, cross-selling stratejileri ve recommendation systems geliştirmek için faydalı olabilir.
+These types of analyses can be useful for developing store layouts, cross-selling strategies, and recommendation systems.
