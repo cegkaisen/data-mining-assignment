@@ -1,6 +1,6 @@
 ## **1. Introduction**
 
-Git repository link: 
+Git repository link: https://github.com/cegkaisen/data-mining-assignment
 
 In this study, I performed association rule mining on the provided grocery shopping dataset. Association rule mining is a data mining method used to identify frequently co-occurring items within transaction data and the relationships between them. This method is particularly used for market basket analysis. It allows us to examine which product categories are purchased together in customers' shopping baskets.
 
@@ -118,7 +118,7 @@ This rule has a high lift value and indicates a strong complementary product rel
 - support: 0.0157
 
 - confidence: 0.5499
-- 
+  
 - lift: 2.10
 
 This rule indicates that granola and yogurt products are frequently purchased together. The high confidence value indicates that approximately half of customers who purchase granola also purchase yogurt. This may particularly reflect breakfast or healthy snack consumption habits.
@@ -145,7 +145,7 @@ This rule has a very high confidence value. The vast majority of customers who p
   
 - lift: 1.28
 
-This rule has a very high confidence value. The vast majority of customers who purchase fresh herbs also purchase fresh vegetables. This indicates that customers purchase these products together for meal preparation.
+This rule is one of the rules with the highest support value. This indicates that customers frequently purchase fruit and vegetable categories together during their shopping. Although the lift value is not very high, the high support value indicates that this relationship is a fairly common shopping behavior.
 
 
 ## **7. Time-based Pattern Analysis**
